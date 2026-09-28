@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin Panel</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+
+    <style>
+        body {
+            background: #f4f6f9;
+            font-family: Arial, sans-serif;
+        }
+
+        .navbar {
+            background: #212529;
+            color: white;
+            padding: 15px 30px;
+        }
+
+        .container-box {
+            inline-size: 95%;
+            margin: 25px auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.12);
+        }
+
+        table {
+            inline-size: 100%;
+            text-align: center;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: #cfe2ff;
+            padding: 12px;
+        }
+
+        td {
+            padding: 10px;
+            border-block-end: 1px solid #ddd;
+            vertical-align: middle;
+        }
+
+        img {
+            inline-size: 80px;
+            block-size: 60px;
+            object-fit: cover;
+            border-radius: 5px;
+        }
+
+        select {
+            margin-block-end: 6px;
+        }
+
+        .badge {
+            padding: 6px 10px;
+            border-radius: 15px;
+        }
+
+        .pending {
+            background: #ffc107;
+            color: black;
+        }
+
+        .assigned {
+            background: #198754;
+            color: white;
+        }
+
+        .unassigned {
+            background: #dc3545;
+            color: white;
+        }
+
+        #map {
+            block-size: 500px;
+            inline-size: 100%;
+            border-radius: 10px;
+            margin-block-start: 15px;
+            margin-block-end: 15px;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="navbar">
+    <h3>Admin Panel - Complaint Assignment</h3>
+</div>
+<div class="container-box">
+
+    <div class="row">
+
+        <div class="col-md-3">
+            <div class="card bg-primary text-white p-3">
+                <h5>Total Complaints</h5>
+                <h2>{{ total }}</h2>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card bg-warning text-dark p-3">
+                <h5>Pending</h5>
+                <h2>{{ pending }}</h2>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card bg-info text-white p-3">
+                <h5>In Progress</h5>
+                <h2>{{ progress }}</h2>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card bg-success text-white p-3">
+                <h5>Resolved</h5>
+                <h2>{{ resolved }}</h2>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+<div class="container-box">
+
+    <h4>All Complaints</h4>
+
+    <table>
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Tracking ID</th>
+            <th>Complainant</th>
+            <th>Title</th>
+            <th>Status</th>
+            <th>Department</th>
+            <th>Station</th>
+            <th>Image</th>
+            <th>Assign Case</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        {% for c in complaints %}
+        <tr>
+            <td>{{ c['id'] }}</td>
+            <td>{{ c['tracking_id'] }}</td>
+
+            <td>
+                {{ c['person_name'] }}<br>
+                <small>{{ c['phone'] }}</small>
+            </td>
+
+            <td>{{ c['title'] }}</td>
+
+            <td>
+                {% if c['status'] == 'Pending' %}
+                    <span class="badge pending">Pending</span>
+                {% else %}
+                    <span class="badge assigned">{{ c['status'] }}</span>
+                {% endif %}
+            </td>
+
+            <td>
+                {% if c['department'] == 'Unassigned' %}
+                    <span class="badge unassigned">Unassigned</span>
+                {% else %}
+                    <span class="badge assigned">{{ c['department'] }}</span>
+                {% endif %}
+            </td>
+
+            <td>
+                {% if c['station'] == 'Unassigned' %}
+                    <span class="badge unassigned">Unassigned</span>
+                {% else %}
+                    <span class="badge assigned">{{ c['station'] }}</span>
+                {% endif %}
+            </td>
+
+            <td>
+                {% if c['image'] %}
+                    <img src="{{ url_for('static', filename='uploads/' + c['image']) }}">
+                {% else %}
+                    No Image
+                {% endif %}
+            </td>
+
+            <td>
+                <form method="POST" action="/assign_case/{{ c['id'] }}">
+
+                    <select name="department" class="form-control" required>
+                        <option value="">Select Department</option>
+                        <option value="Traffic Police">Traffic Police</option>
+                        <option value="Cyber Crime">Cyber Crime</option>
+                        <option value="Women Safety">Women Safety</option>
+                        <option value="Theft/Robbery">Theft / Robbery</option>
+                        <option value="Public Disturbance">Public Disturbance</option>
+                        <option value="Missing Person">Missing Person</option>
+                        <option value="General Police">General Police</option>
+                    </select>
+
+                    <select name="station" class="form-control" required>
+                        <option value="">Select Police Station</option>
+                        <option value="Whitefield Police Station">Whitefield Police Station</option>
+                        <option value="KR Puram Police Station">KR Puram Police Station</option>
+                        <option value="Marathahalli Police Station">Marathahalli Police Station</option>
+                        <option value="Electronic City Police Station">Electronic City Police Station</option>
+                        <option value="Indiranagar Police Station">Indiranagar Police Station</option>
+                        <option value="Koramangala Police Station">Koramangala Police Station</option>
+                    </select>
+
+                    <button type="submit" class="btn btn-primary btn-sm">
+                        Assign
+                    </button>
+
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+</div>
+
+<div class="container-box">
+    <h4>Complaint Locations</h4>
+    <div id="map"></div>
+</div>
+
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+<script id="complaints-data" type="application/json">
+    {{ complaints | tojson | safe }}
+</script>
+
+<script>
+    var map = L.map('map').setView([12.9716, 77.5946], 10);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap'
+    }).addTo(map);
+
+    var complaints = JSON.parse(
+        document.getElementById('complaints-data').textContent
+    );
+
+    complaints.forEach(function(c) {
+        if (c.latitude && c.longitude) {
+            var lat = parseFloat(c.latitude);
+            var lng = parseFloat(c.longitude);
+
+            if (!isNaN(lat) && !isNaN(lng)) {
+                L.marker([lat, lng])
+                    .addTo(map)
+                    .bindPopup(
+                        "<b>Tracking ID:</b> " + c.tracking_id + "<br>" +
+                        "<b>Name:</b> " + c.person_name + "<br>" +
+                        "<b>Title:</b> " + c.title + "<br>" +
+                        "<b>Status:</b> " + c.status + "<br>" +
+                        "<b>Department:</b> " + c.department + "<br>" +
+                        "<b>Station:</b> " + c.station
+                    );
+            }
+        }
+    });
+</script>
+
+</body>
+</html>

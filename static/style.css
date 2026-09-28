@@ -1,0 +1,118 @@
+/* BODY */
+body {
+    font-family: Arial, sans-serif;
+    background: #f4f6f9;
+    margin: 0;
+    padding: 0;
+}
+
+/* HEADINGS */
+h2 {
+    text-align: center;
+    color: #333;
+}
+
+/* CONTAINER (FIXED WIDTH ISSUE) */
+.container {
+    inline-size: 90%;   /* ✅ FIXED */
+    max-inline-size: 1200px;
+    margin: 30px auto;
+}
+
+/* FORM BOX (for login/register only) */
+.form-box {
+    inline-size: 400px;
+    margin: auto;
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+/* INPUTS */
+input, textarea, select {
+    inline-size: 100%;
+    padding: 10px;
+    margin: 8px 0;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+/* BUTTON */
+button {
+    inline-size: 100%;
+    padding: 10px;
+    background: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #0056b3;
+}
+
+/* LINKS */
+a {
+    text-decoration: none;
+    color: #007bff;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+/* TABLE */
+table {
+    inline-size: 100%;
+    margin-block-start: 20px;
+    border-collapse: collapse;
+    background: white;
+}
+
+table, th, td {
+    border: 1px solid #ddd;
+}
+
+/* TABLE HEADER */
+th {
+    background: #0d6efd;
+    color: white;
+    padding: 12px;
+}
+
+/* TABLE DATA */
+td {
+    padding: 10px;
+    text-align: center;
+    vertical-align: middle;
+}
+
+/* IMAGE */
+img {
+    border-radius: 5px;
+}
+
+/* FLASH MESSAGE */
+.flash {
+    text-align: center;
+    color: green;
+    font-weight: bold;
+}
+
+/* STATUS COLORS */
+.status-pending {
+    color: orange;
+    font-weight: bold;
+}
+
+.status-progress {
+    color: blue;
+    font-weight: bold;
+}
+
+.status-resolved {
+    color: green;
+    font-weight: bold;
+}

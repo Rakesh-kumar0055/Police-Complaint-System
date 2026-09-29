@@ -1,3 +1,4 @@
 Flask
-requests
-twilio
+Werkzeug
+Twilio
+python-dotenv
